@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "InnocelSQL2025_"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Standard"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - app-network
+
+  api:
+    build: ./api
+    ports:
+      - "9260:8080"
+    depends_on:
+      - sqlserver
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=innocel_asessment;User Id=sa;Password=InnocelSQL2025_;TrustServerCertificate=true;
+    networks:
+      - app-network
+
+volumes:
+  sqlserver_data:
+
+networks:
+  app-network:
