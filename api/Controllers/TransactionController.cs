@@ -34,7 +34,7 @@ namespace api.Controllers
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> ProcessTransaction(
-            [FromForm] TransactionDto transactionDto
+            [FromBody] TransactionDto transactionDto
         )
         {
             if (!ModelState.IsValid)

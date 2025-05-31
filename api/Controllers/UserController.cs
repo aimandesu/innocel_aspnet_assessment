@@ -53,7 +53,7 @@ namespace api.Controllers
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddDays(7)
+                Expires = DateTime.UtcNow.AddMinutes(5)
             });
 
             return Ok(
