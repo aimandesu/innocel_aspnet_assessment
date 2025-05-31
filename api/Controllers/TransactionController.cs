@@ -22,12 +22,15 @@ namespace api.Controllers
     {
 
         private readonly ITransactionRepository _transactionRepo;
+        private readonly ILogger<TransactionController> _logger;
 
         public TransactionController(
-         ITransactionRepository transactionRepository
+         ITransactionRepository transactionRepository,
+         ILogger<TransactionController> logger
         )
         {
             _transactionRepo = transactionRepository;
+            _logger = logger;
         }
 
 
@@ -44,12 +47,20 @@ namespace api.Controllers
             //     ? string.Empty
             //     : Convert.ToBase64String(Encoding.UTF8.GetBytes(transactionDto.PartnerPassword));
 
-            var dto = transactionDto with { Sig = SignatureHelper.GenerateSignature(transactionDto) }; //sig too 
+            _logger.LogInformation("Processing transaction for PartnerKey: {PartnerKey}, RefNo: {RefNo}",
+            transactionDto.PartnerKey, transactionDto.PartnerRefNo);
 
-            var result = await _transactionRepo.ProcessTransactionSequence(dto); //change this to dto
+            var dto = transactionDto with
+            {
+                Sig = SignatureHelper.GenerateSignature(transactionDto),
+                Timestamp = DateTime.UtcNow.ToString("o")
+            };
+
+            var result = await _transactionRepo.ProcessTransactionSequence(dto);
 
             if (!result.IsSuccess)
             {
+                _logger.LogError("Error occurred while processing transaction: {error}", result.ErrorMessage);
                 return Unauthorized(new FailTransactionDto
                 {
                     Result = Enum.TransactionResult.Failure,
@@ -57,6 +68,7 @@ namespace api.Controllers
                 });
             }
 
+            _logger.LogInformation("Transaction processed completed: {@RequestBody}", result.Data);
             return Ok(result.Data);
 
         }

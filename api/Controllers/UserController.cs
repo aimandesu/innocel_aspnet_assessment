@@ -61,6 +61,7 @@ namespace api.Controllers
                 {
                     UserName = user.UserName ?? "",
                     PartnerNo = user.PartnerNo,
+                    PartnerPassword = loginDto.Password,
                 }
             );
         }

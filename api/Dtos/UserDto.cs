@@ -9,5 +9,6 @@ namespace api.Dtos
     {
         public string UserName { get; set; } = string.Empty;
         public string PartnerNo { get; set; } = string.Empty;
+        public string PartnerPassword { get; set; } = string.Empty;
     }
 }

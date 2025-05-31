@@ -10,11 +10,17 @@ using Microsoft.IdentityModel.Tokens;
 using api.Interfaces;
 using api.Service;
 using api.Repositories;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.ReadFrom.Configuration(context.Configuration);
+});
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -85,6 +91,7 @@ using (var scope = app.Services.CreateScope())
     await FakeUserSeeder.GenerateFakeUsersAsync(services);
 }
 
+app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();

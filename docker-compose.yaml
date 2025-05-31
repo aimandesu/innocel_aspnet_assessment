@@ -4,7 +4,7 @@ services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      SA_PASSWORD: "InnocelSQL2025_"
+      SA_PASSWORD: "DockerSQL2022_"
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Standard"
     ports:
@@ -20,8 +20,10 @@ services:
       - "9260:8080"
     depends_on:
       - sqlserver
+    volumes:
+      - ./Logs:/app/Logs
     environment:
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=innocel_asessment;User Id=sa;Password=InnocelSQL2025_;TrustServerCertificate=true;
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=innocel_asessment;User Id=sa;Password=DockerSQL2022_;TrustServerCertificate=true;
     networks:
       - app-network
 
